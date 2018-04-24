@@ -33,28 +33,18 @@ def getfeatures(filename,size):
     #plt.imshow(img)
     #plt.show()
     #print(img.shape)
-
-    '''
-    # HOG
-    hf0 = hog(img[:,:,0],block_norm="L2-Hys") # 1d array
+    hf0 = hog(img[:,:,0],block_norm="L2-Hys") # 1d array of 2916
     hf1 = hog(img[:,:,1],block_norm="L2-Hys")
     hf2 = hog(img[:,:,2],block_norm="L2-Hys")
     hf = np.concatenate((hf0,hf1,hf2))
     #print(hf.shape," --hf")
     #sys.exit(0)
     return hf
-    '''
-    chist0 =  np.histogram(img[:,:,0], bins=32)[0]
-    chist1 =  np.histogram(img[:,:,1], bins=32)[0]
-    chist2 =  np.histogram(img[:,:,2], bins=32)[0]
-    chist =   np.concatenate((chist0,chist1,chist2))
-    #print("chist1.shape, chist.shape",chist1.shape,chist.shape)
-    return chist
 
 
 def getDataset(perClassCount = 100, size=(500,500)):
     
-    pkfilename = mergedDatapath + '/' + 'feature_color_data.sav'
+    pkfilename = mergedDatapath + '/' + 'feature_data.sav'
 
     # load features if we have saved it earlier.
     X,Y = pickle.load(open(pkfilename, 'rb'))
@@ -96,12 +86,11 @@ def getDataset(perClassCount = 100, size=(500,500)):
 if __name__ == '__main__':
     
     #preprocess1()
-    X,Y = getDataset(perClassCount = 600,size=(300,300))
+    X,Y = getDataset(perClassCount = 600,size=(100,100))
     trainx,testx, trainy ,testy = train_test_split(X,Y,test_size=0.2)
 
     print("Traing and testing model..")
-    clf = svm.SVC(max_iter=1000000000)
-    clf = KNeighborsClassifier(n_neighbors=5)
+    clf = svm.LinearSVC()#svc.SVM(kernel='linear')#KNeighborsClassifier(n_neighbors=3)
     clf.fit(trainx,trainy)
     print("Score is:",clf.score(testx,testy))
 
